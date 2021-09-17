@@ -25,7 +25,8 @@ nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "",
                  big.mark = "< >", decimal.mark = ".", html = TRUE, na = NA_character_,
                  ...) {
   if (length(x) == 0) return(character())
-  args <- lapply(match.call()[-1], eval)
+  args <- list(x = x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
+               big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na)
   check_nmbr_args(args)
 
   x <- round(x*scale/accuracy) * accuracy/scale
