@@ -3,6 +3,9 @@
 \name{number-formatting}
 \alias{number-formatting}
 \alias{nmbr}
+\alias{prct}
+\alias{cmma}
+\alias{dllr}
 \title{Format numbers using \code{scales::number()}-type functions}
 \usage{
 nmbr(
@@ -10,6 +13,44 @@ nmbr(
   accuracy = 1,
   scale = 1,
   prefix = "",
+  suffix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  html = TRUE,
+  na = NA_character_,
+  ...
+)
+
+prct(
+  x,
+  symbol = "\%",
+  accuracy = 1,
+  prefix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  html = TRUE,
+  na = NA_character_,
+  ...
+)
+
+cmma(
+  x,
+  symbol = ",",
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  decimal.mark = ".",
+  html = TRUE,
+  na = NA_character_,
+  ...
+)
+
+dllr(
+  x,
+  symbol = "$",
+  accuracy = 1,
+  scale = 1,
   suffix = "",
   big.mark = "< >",
   decimal.mark = ".",
@@ -29,9 +70,13 @@ element-wise to \code{x} (and must have the same length as \code{x}).}
 signs and narrow spaces between digits) as HTML strings (the default;
 best for Word or HTML output documents) or unicode.}
 
-\item{na}{String scalar}
+\item{na}{String scalar, replacement to use for missing values in \code{x}.}
+
+\item{symbol}{String scalar, value to use for the unit measure of specific
+formatting methods (percent sign, dollar sign, etc)}
 }
 \description{
-These functions replace/extend the \code{scales::number()-type} formatting
-functions.
+These functions extend the \code{scales::number()-type} formatting functions,
+with nice printing of negative numbers, optional replacement of missing
+values, and vectorised formatting options.
 }

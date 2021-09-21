@@ -25,4 +25,19 @@ test_that("nmbr works for vector formatting options", {
          big.mark = c("", " ", ","), decimal.mark = c("/", ",", ".")),
     c("0/12", "&minus;1 234,56", "123,456.00")
   )
+
+  test_that("prct works as expected", {
+    expect_equal(prct(0.123456), nmbr(0.123456, scale = 100, suffix = "%"))
+    expect_equal(prct(0.987654, symbol = ""), nmbr(0.987654, scale = 100))
+  })
+
+  test_that("cmma works as expected", {
+    expect_equal(cmma(123456), nmbr(123456, big.mark = ","))
+    expect_equal(cmma(987654, symbol = "< >"), nmbr(987654))
+  })
+
+  test_that("dllr works as expected", {
+    expect_equal(dllr(123456), nmbr(123456, prefix = "$"))
+    expect_equal(dllr(987654, symbol = "\u20ac"), nmbr(987654, prefix = "\u20ac"))
+  })
 })

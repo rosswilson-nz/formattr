@@ -4,8 +4,9 @@
 
 #' Format numbers using `scales::number()`-type functions
 #'
-#' These functions replace/extend the `scales::number()-type` formatting
-#'     functions.
+#' These functions extend the `scales::number()-type` formatting functions,
+#'     with nice printing of negative numbers, optional replacement of missing
+#'     values, and vectorised formatting options.
 #'
 #' @param x Numeric vector to format
 #' @param accuracy,scale,prefix,suffix,big.mark,decimal.mark,... As in
@@ -14,7 +15,9 @@
 #' @param html Logical scalar. Whether to include formatting marks (minus
 #'     signs and narrow spaces between digits) as HTML strings (the default;
 #'     best for Word or HTML output documents) or unicode.
-#' @param na String scalar
+#' @param na String scalar, replacement to use for missing values in `x`.
+#' @param symbol String scalar, value to use for the unit measure of specific
+#'     formatting methods (percent sign, dollar sign, etc)
 #'
 #' @name number-formatting
 NULL
@@ -100,4 +103,28 @@ check_nmbr_args <- function(args) {
   if (!is.null(args$decimal.mark) && length(args$decimal.mark) != 1
       && length(args$decimal.mark) != lenx)
     stop_wrong_length("decimal.mark", lenx, length(args$decimal.mark))
+}
+
+#' @rdname number-formatting
+#' @export
+prct <- function(x, symbol = "%", accuracy = 1, prefix = "", big.mark = "< >", decimal.mark = ".",
+                 html = TRUE, na = NA_character_, ...) {
+  nmbr(x, accuracy = accuracy, scale = 100, prefix = prefix, suffix = symbol, big.mark = big.mark,
+       decimal.mark = decimal.mark, html = html, na = na, ...)
+}
+
+#' @rdname number-formatting
+#' @export
+cmma <- function(x, symbol = ",", accuracy = 1, scale = 1, prefix = "", suffix = "",
+                 decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
+  nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix, big.mark = symbol,
+       decimal.mark = decimal.mark, html = html, na = na, ...)
+}
+
+#' @rdname number-formatting
+#' @export
+dllr <- function(x, symbol = "$", accuracy = 1, scale = 1, suffix = "", big.mark = "< >",
+                 decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
+  nmbr(x, accuracy = accuracy, scale = scale, prefix = symbol, suffix = suffix, big.mark = big.mark,
+       decimal.mark = decimal.mark, html = html, na = na, ...)
 }
