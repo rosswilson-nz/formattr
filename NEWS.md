@@ -1,5 +1,7 @@
 # formattr 0.1.0.9000
 
+* Added `pval()`, `sstars()`, and `coef_se()`.
+
 # formattr 0.1.0
 
 * First version of `formattr`

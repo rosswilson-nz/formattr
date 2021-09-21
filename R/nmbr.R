@@ -4,9 +4,9 @@
 
 #' Format numbers using `scales::number()`-type functions
 #'
-#' These functions extend the `scales::number()-type` formatting functions,
-#'     with nice printing of negative numbers, optional replacement of missing
-#'     values, and vectorised formatting options.
+#' These functions extend the \code{\link[scales]{number}}-type formatting
+#'     functions, with nice printing of negative numbers, optional replacement
+#'     of missing values, and vectorised formatting options.
 #'
 #' @param x Numeric vector to format
 #' @param accuracy,scale,prefix,suffix,big.mark,decimal.mark,... As in
@@ -18,6 +18,10 @@
 #' @param na String scalar, replacement to use for missing values in `x`.
 #' @param percent,comma,dollar String scalar to use for the specific formatting
 #'     method (percent sign, comma separator, dollar sign, etc).
+#' @param min_p Numeric scalar. The smallest p-value to print; values smaller
+#'     than this will be printed as \code{"<`min_p`".}
+#' @param add_p Logical scalar. Should `p=` be included before formatted
+#'     p-values?
 #'
 #' @name number-formatting
 NULL
@@ -127,4 +131,24 @@ dllr <- function(x, dollar = "$", accuracy = 1, scale = 1, suffix = "", big.mark
                  decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
   nmbr(x, accuracy = accuracy, scale = scale, prefix = dollar, suffix = suffix, big.mark = big.mark,
        decimal.mark = decimal.mark, html = html, na = na, ...)
+}
+
+#' @rdname number-formatting
+#' @export
+pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
+                 decimal.mark = ".", na = NA_character_, ...) {
+  if (!rlang::is_bare_numeric(accuracy, 1)) stop_wrong_type("accuracy", "a numeric scalar")
+  if (!rlang::is_bare_numeric(min_p, 1)) stop_wrong_type("min_p", "a numeric scalar")
+  if (min_p < accuracy) stop_invalid_min_p(accuracy, min_p)
+  if (!rlang::is_bool(add_p)) stop_wrong_type("add_p", "a logical scalar")
+
+  out <- nmbr(x, accuracy = accuracy, decimal.mark = decimal.mark)
+  out[x < min_p] <- paste0("<", nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark))
+
+  if (add_p) {
+    out[x < min_p] <- paste0("p", out[x < min_p])
+    out[x >= min_p] <- paste0("p=", out[x >= min_p])
+  }
+
+  out
 }

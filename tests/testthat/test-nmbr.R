@@ -40,6 +40,13 @@ test_that("nmbr works for vector formatting options", {
     expect_equal(dllr(123456), nmbr(123456, prefix = "$"))
     expect_equal(dllr(987654, dollar = "\u20ac"), nmbr(987654, prefix = "\u20ac"))
   })
+
+  test_that("pval works as expected", {
+    expect_equal(pval(0.0012345), "0.0012")
+    expect_equal(pval(0.00012345, min_p = 0.001), "<0.001")
+    expect_equal(pval(c(0.0012345, 0.00012345), min_p = 0.001, add_p = TRUE),
+                 c("p=0.0012", "p<0.001"))
+  })
 })
 
 test_that("nmbr gives appropriate error messages", {
@@ -58,4 +65,8 @@ test_that("nmbr gives appropriate error messages", {
   expect_error(nmbr(123456, suffix = rep("%", 2)), class = "formattr_error_wrong_length")
   expect_error(nmbr(123456, big.mark = rep(",", 2)), class = "formattr_error_wrong_length")
   expect_error(nmbr(123456, decimal.mark = rep(".", 2)), class = "formattr_error_wrong_length")
+  expect_error(pval(c(0.0123, 0.1234), accuracy = c(1, 2)), class = "formattr_error_wrong_type")
+  expect_error(pval(0.0123, min_p = "a"), class = "formattr_error_wrong_type")
+  expect_error(pval(0.0123, accuracy = 0.01, min_p = 0.001), class = "formattr_error_invalid_min_p")
+  expect_error(pval(0.0123, add_p = 1), class = "formattr_error_wrong_type")
 })

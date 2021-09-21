@@ -5,6 +5,7 @@
 \alias{mean_sd}
 \alias{n_percent}
 \alias{est_ci}
+\alias{coef_se}
 \title{Results formatting for tables and reports}
 \usage{
 mean_sd(mean, sd, prefix = "", suffix = "", ..., format_paren = TRUE)
@@ -25,27 +26,60 @@ est_ci(
   est,
   low,
   high,
+  p,
   prefix = "",
   suffix = "",
   ...,
   .sep = " to ",
-  format_paren = TRUE
+  format_paren = TRUE,
+  stars = TRUE,
+  levels = c(`*` = 0.1, `**` = 0.05, `***` = 0.01),
+  accuracy_p = 1e-04,
+  min_p = accuracy_p,
+  add_p = TRUE
+)
+
+coef_se(
+  coef,
+  se,
+  p,
+  prefix = "",
+  suffix = "",
+  ...,
+  stars = TRUE,
+  levels = c(`*` = 0.1, `**` = 0.05, `***` = 0.01),
+  accuracy_p = 1e-04,
+  min_p = accuracy_p,
+  add_p = TRUE
 )
 }
 \arguments{
-\item{mean, sd, n, proportion, est, low, high}{Numeric vectors. If \code{proportion} is
-missing, it will be calculated as \code{n / sum(n)}.}
+\item{mean, sd, n, proportion, est, low, high, coef, se, p}{Numeric vectors. If
+\code{proportion} is missing, it will be calculated as \code{n / sum(n)}.
+If \code{p} is provided for \code{est_ci()} and \code{coef_se()}, p-values (if
+\code{stars = FALSE}) or significance stars (if \code{stars = TRUE})
+will be printed after the coefficient and standard error/confidence
+interval.}
 
 \item{format_paren}{Logical scalar. Should the values inside parentheses
 include the specified prefix and suffix formatters?}
 
-\item{accuracy, scale, prefix, suffix, percent, ...}{Passed to \code{nmbr()} and
-\code{prct()}.}
+\item{accuracy, scale, prefix, suffix, percent, ...}{Passed to \code{\link{nmbr}}
+and \code{\link{prct}}.}
 
 \item{.sep}{Separator between lower and upper bounds of the CI; default is
 \code{' to '}.}
+
+\item{stars}{Logical scalar. Should significance stars (\code{TRUE}) or p-values
+(\code{FALSE}) be printed after confidence intervals or standard errors (only
+used when \code{p} is provided).}
+
+\item{levels}{Passed to \code{\link{stars}}.}
+
+\item{accuracy_p, min_p, add_p}{Passed to \code{\link{pval}} (\code{accuracy_p} as
+the \code{accuracy} argument of \code{pval()}).}
 }
 \description{
-These functions are simple wrappers around \code{paste()} and \code{nmbr()} to format
-results for printing.
+These functions are simple wrappers around \code{\link[base]{paste}} and
+\code{\link{nmbr}} to format results for printing.
 }

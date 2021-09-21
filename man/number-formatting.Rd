@@ -6,6 +6,7 @@
 \alias{prct}
 \alias{cmma}
 \alias{dllr}
+\alias{pval}
 \title{Format numbers using \code{scales::number()}-type functions}
 \usage{
 nmbr(
@@ -58,6 +59,16 @@ dllr(
   na = NA_character_,
   ...
 )
+
+pval(
+  x,
+  accuracy = 1e-04,
+  min_p = accuracy,
+  add_p = FALSE,
+  decimal.mark = ".",
+  na = NA_character_,
+  ...
+)
 }
 \arguments{
 \item{x}{Numeric vector to format}
@@ -74,9 +85,15 @@ best for Word or HTML output documents) or unicode.}
 
 \item{percent, comma, dollar}{String scalar to use for the specific formatting
 method (percent sign, comma separator, dollar sign, etc).}
+
+\item{min_p}{Numeric scalar. The smallest p-value to print; values smaller
+than this will be printed as \code{"<`min_p`".}}
+
+\item{add_p}{Logical scalar. Should \verb{p=} be included before formatted
+p-values?}
 }
 \description{
-These functions extend the \code{scales::number()-type} formatting functions,
-with nice printing of negative numbers, optional replacement of missing
-values, and vectorised formatting options.
+These functions extend the \code{\link[scales]{number}}-type formatting
+functions, with nice printing of negative numbers, optional replacement
+of missing values, and vectorised formatting options.
 }

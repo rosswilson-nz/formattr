@@ -16,3 +16,8 @@ stop_wrong_length <- function(arg, lenx, lenarg) {
   )
   rlang::cnd_signal(rlang::error_cnd("formattr_error_wrong_length", message = x))
 }
+
+stop_invalid_min_p <- function(accuracy, min_p) {
+  x <- "`min_p` cannot be smaller than `accuracy`"
+  rlang::cnd_signal(rlang::error_cnd("formattr_error_invalid_min_p", message = x))
+}
