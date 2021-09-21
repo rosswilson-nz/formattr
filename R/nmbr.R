@@ -16,8 +16,8 @@
 #'     signs and narrow spaces between digits) as HTML strings (the default;
 #'     best for Word or HTML output documents) or unicode.
 #' @param na String scalar, replacement to use for missing values in `x`.
-#' @param symbol String scalar, value to use for the unit measure of specific
-#'     formatting methods (percent sign, dollar sign, etc)
+#' @param percent,comma,dollar String scalar to use for the specific formatting
+#'     method (percent sign, comma separator, dollar sign, etc).
 #'
 #' @name number-formatting
 NULL
@@ -107,24 +107,24 @@ check_nmbr_args <- function(args) {
 
 #' @rdname number-formatting
 #' @export
-prct <- function(x, symbol = "%", accuracy = 1, prefix = "", big.mark = "< >", decimal.mark = ".",
+prct <- function(x, percent = "%", accuracy = 1, prefix = "", big.mark = "< >", decimal.mark = ".",
                  html = TRUE, na = NA_character_, ...) {
-  nmbr(x, accuracy = accuracy, scale = 100, prefix = prefix, suffix = symbol, big.mark = big.mark,
+  nmbr(x, accuracy = accuracy, scale = 100, prefix = prefix, suffix = percent, big.mark = big.mark,
        decimal.mark = decimal.mark, html = html, na = na, ...)
 }
 
 #' @rdname number-formatting
 #' @export
-cmma <- function(x, symbol = ",", accuracy = 1, scale = 1, prefix = "", suffix = "",
+cmma <- function(x, comma = ",", accuracy = 1, scale = 1, prefix = "", suffix = "",
                  decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
-  nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix, big.mark = symbol,
+  nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix, big.mark = comma,
        decimal.mark = decimal.mark, html = html, na = na, ...)
 }
 
 #' @rdname number-formatting
 #' @export
-dllr <- function(x, symbol = "$", accuracy = 1, scale = 1, suffix = "", big.mark = "< >",
+dllr <- function(x, dollar = "$", accuracy = 1, scale = 1, suffix = "", big.mark = "< >",
                  decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
-  nmbr(x, accuracy = accuracy, scale = scale, prefix = symbol, suffix = suffix, big.mark = big.mark,
+  nmbr(x, accuracy = accuracy, scale = scale, prefix = dollar, suffix = suffix, big.mark = big.mark,
        decimal.mark = decimal.mark, html = html, na = na, ...)
 }

@@ -28,16 +28,34 @@ test_that("nmbr works for vector formatting options", {
 
   test_that("prct works as expected", {
     expect_equal(prct(0.123456), nmbr(0.123456, scale = 100, suffix = "%"))
-    expect_equal(prct(0.987654, symbol = ""), nmbr(0.987654, scale = 100))
+    expect_equal(prct(0.987654, percent = ""), nmbr(0.987654, scale = 100))
   })
 
   test_that("cmma works as expected", {
     expect_equal(cmma(123456), nmbr(123456, big.mark = ","))
-    expect_equal(cmma(987654, symbol = "< >"), nmbr(987654))
+    expect_equal(cmma(987654, comma = "< >"), nmbr(987654))
   })
 
   test_that("dllr works as expected", {
     expect_equal(dllr(123456), nmbr(123456, prefix = "$"))
-    expect_equal(dllr(987654, symbol = "\u20ac"), nmbr(987654, prefix = "\u20ac"))
+    expect_equal(dllr(987654, dollar = "\u20ac"), nmbr(987654, prefix = "\u20ac"))
   })
+})
+
+test_that("nmbr gives appropriate error messages", {
+  expect_error(nmbr("123456"), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, accuracy = "a"), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, scale = "a"), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, prefix = 1), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, suffix = 1), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, big.mark = 1), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, decimal.mark = 1), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, html = "a"), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, na = 1), class = "formattr_error_wrong_type")
+  expect_error(nmbr(123456, accuracy = 1:2), class = "formattr_error_wrong_length")
+  expect_error(nmbr(123456, scale = 1:2), class = "formattr_error_wrong_length")
+  expect_error(nmbr(123456, prefix = rep("$", 2)), class = "formattr_error_wrong_length")
+  expect_error(nmbr(123456, suffix = rep("%", 2)), class = "formattr_error_wrong_length")
+  expect_error(nmbr(123456, big.mark = rep(",", 2)), class = "formattr_error_wrong_length")
+  expect_error(nmbr(123456, decimal.mark = rep(".", 2)), class = "formattr_error_wrong_length")
 })

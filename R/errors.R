@@ -14,5 +14,5 @@ stop_wrong_length <- function(arg, lenx, lenarg) {
       x = paste0("`", arg, "` has length ", lenarg, ", but `x` has length ", lenx, ".")
     ))
   )
-  rlang::cnd_signal(rlang::error_cnd("formattr_error_wrong_type", message = x))
+  rlang::cnd_signal(rlang::error_cnd("formattr_error_wrong_length", message = x))
 }

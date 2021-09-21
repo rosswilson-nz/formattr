@@ -23,7 +23,7 @@ nmbr(
 
 prct(
   x,
-  symbol = "\%",
+  percent = "\%",
   accuracy = 1,
   prefix = "",
   big.mark = "< >",
@@ -35,7 +35,7 @@ prct(
 
 cmma(
   x,
-  symbol = ",",
+  comma = ",",
   accuracy = 1,
   scale = 1,
   prefix = "",
@@ -48,7 +48,7 @@ cmma(
 
 dllr(
   x,
-  symbol = "$",
+  dollar = "$",
   accuracy = 1,
   scale = 1,
   suffix = "",
@@ -72,8 +72,8 @@ best for Word or HTML output documents) or unicode.}
 
 \item{na}{String scalar, replacement to use for missing values in \code{x}.}
 
-\item{symbol}{String scalar, value to use for the unit measure of specific
-formatting methods (percent sign, dollar sign, etc)}
+\item{percent, comma, dollar}{String scalar to use for the specific formatting
+method (percent sign, comma separator, dollar sign, etc).}
 }
 \description{
 These functions extend the \code{scales::number()-type} formatting functions,

@@ -2,5 +2,8 @@
 
 export(cmma)
 export(dllr)
+export(est_ci)
+export(mean_sd)
+export(n_percent)
 export(nmbr)
 export(prct)
