@@ -23,6 +23,10 @@
 #' @param add_p Logical scalar. Should `p=` be included before formatted
 #'     p-values?
 #'
+#' @return For `create_nmbr()`, a function with the same arguments as `nmbr()`;
+#'     for other functions a character string applying the specified formatting
+#'     rules to `x`.
+#'
 #' @name number-formatting
 NULL
 
@@ -73,8 +77,9 @@ nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "",
 }
 
 check_nmbr_args <- function(args) {
-  if (!rlang::is_bare_numeric(eval(args$x))) stop_wrong_type("x", "a numeric vector")
-  lenx <- length(args$x)
+  if (!is.null(args$x)) {
+    if (!rlang::is_bare_numeric(eval(args$x))) stop_wrong_type("x", "a numeric vector")
+  }
 
   if (!is.null(args$accuracy) && !rlang::is_bare_numeric(args$accuracy))
     stop_wrong_type("accuracy", "a numeric vector/scalar")
@@ -94,19 +99,22 @@ check_nmbr_args <- function(args) {
   if (!is.null(args$na) && !rlang::is_scalar_character(args$na))
     stop_wrong_type("na", "a string scalar")
 
-  if (!is.null(args$accuracy) && length(args$accuracy) != 1 && length(args$accuracy) != lenx)
-    stop_wrong_length("accuracy", lenx, length(args$accuracy))
-  if (!is.null(args$scale) && length(args$scale) != 1 && length(args$scale) != lenx)
-    stop_wrong_length("scale", lenx, length(args$scale))
-  if (!is.null(args$prefix) && length(args$prefix) != 1 && length(args$prefix) != lenx)
-    stop_wrong_length("prefix", lenx, length(args$prefix))
-  if (!is.null(args$suffix) && length(args$suffix) != 1 && length(args$suffix) != lenx)
-    stop_wrong_length("suffix", lenx, length(args$suffix))
-  if (!is.null(args$big.mark) && length(args$big.mark) != 1 && length(args$big.mark) != lenx)
-    stop_wrong_length("big.mark", lenx, length(args$big.mark))
-  if (!is.null(args$decimal.mark) && length(args$decimal.mark) != 1
-      && length(args$decimal.mark) != lenx)
-    stop_wrong_length("decimal.mark", lenx, length(args$decimal.mark))
+  if (!is.null(args$x)) {
+    lenx <- length(args$x)
+    if (!is.null(args$accuracy) && length(args$accuracy) != 1 && length(args$accuracy) != lenx)
+      stop_wrong_length("accuracy", lenx, length(args$accuracy))
+    if (!is.null(args$scale) && length(args$scale) != 1 && length(args$scale) != lenx)
+      stop_wrong_length("scale", lenx, length(args$scale))
+    if (!is.null(args$prefix) && length(args$prefix) != 1 && length(args$prefix) != lenx)
+      stop_wrong_length("prefix", lenx, length(args$prefix))
+    if (!is.null(args$suffix) && length(args$suffix) != 1 && length(args$suffix) != lenx)
+      stop_wrong_length("suffix", lenx, length(args$suffix))
+    if (!is.null(args$big.mark) && length(args$big.mark) != 1 && length(args$big.mark) != lenx)
+      stop_wrong_length("big.mark", lenx, length(args$big.mark))
+    if (!is.null(args$decimal.mark) && length(args$decimal.mark) != 1
+        && length(args$decimal.mark) != lenx)
+      stop_wrong_length("decimal.mark", lenx, length(args$decimal.mark))
+  }
 }
 
 #' @rdname number-formatting
@@ -151,4 +159,16 @@ pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
   }
 
   out
+}
+
+#' @rdname number-formatting
+#' @export
+create_nmbr <- function(accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark = "< >",
+                        decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
+  args <- list(accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
+               big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na)
+  check_nmbr_args(args)
+
+  function(x) nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
+                   big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na, ...)
 }

@@ -7,6 +7,7 @@
 \alias{cmma}
 \alias{dllr}
 \alias{pval}
+\alias{create_nmbr}
 \title{Format numbers using \code{scales::number()}-type functions}
 \usage{
 nmbr(
@@ -69,6 +70,18 @@ pval(
   na = NA_character_,
   ...
 )
+
+create_nmbr(
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  html = TRUE,
+  na = NA_character_,
+  ...
+)
 }
 \arguments{
 \item{x}{Numeric vector to format}
@@ -91,6 +104,11 @@ than this will be printed as \code{"<`min_p`".}}
 
 \item{add_p}{Logical scalar. Should \verb{p=} be included before formatted
 p-values?}
+}
+\value{
+For \code{create_nmbr()}, a function with the same arguments as \code{nmbr()};
+for other functions a character string applying the specified formatting
+rules to \code{x}.
 }
 \description{
 These functions extend the \code{\link[scales]{number}}-type formatting

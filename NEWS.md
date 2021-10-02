@@ -1,6 +1,10 @@
-# formattr 0.1.0.9000
+# formattr 0.2.0
+
+* Added `create_descriptive_table() `
 
 * Added `pval()`, `sstars()`, and `coef_se()`.
+
+* Added `create_nmbr()`.
 
 # formattr 0.1.0
 
