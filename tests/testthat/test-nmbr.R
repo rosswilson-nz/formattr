@@ -39,6 +39,7 @@ test_that("nmbr works for vector formatting options", {
          bold = c(TRUE, TRUE, FALSE), italic = c(TRUE, FALSE, TRUE)),
     c("***0/12***", "**&minus;1 234,56**", "*123,456.00*")
   )
+})
 
   test_that("prct works as expected", {
     expect_equal(prct(0.123456), nmbr(0.123456, scale = 100, suffix = "%"))
@@ -63,12 +64,11 @@ test_that("nmbr works for vector formatting options", {
     expect_equal(dllr(123456, italic = TRUE), nmbr(123456, prefix = "$", italic = TRUE))
   })
 
-  test_that("pval works as expected", {
-    expect_equal(pval(0.0012345), "0.0012")
-    expect_equal(pval(0.00012345, min_p = 0.001), "<0.001")
-    expect_equal(pval(c(0.0012345, 0.00012345), min_p = 0.001, add_p = TRUE),
-                 c("p=0.0012", "p<0.001"))
-  })
+test_that("pval works as expected", {
+  expect_equal(pval(0.0012345), "0.0012")
+  expect_equal(pval(0.00012345, min_p = 0.001), "<0.001")
+  expect_equal(pval(c(0.0012345, 0.00012345), min_p = 0.001, add_p = TRUE),
+               c("p=0.0012", "p<0.001"))
 })
 
 test_that("nmbr gives appropriate error messages", {
@@ -95,4 +95,15 @@ test_that("nmbr gives appropriate error messages", {
   expect_error(pval(0.0123, min_p = "a"), class = "formattr_error_wrong_type")
   expect_error(pval(0.0123, accuracy = 0.01, min_p = 0.001), class = "formattr_error_invalid_min_p")
   expect_error(pval(0.0123, add_p = 1), class = "formattr_error_wrong_type")
+})
+
+test_that("create_nmbr works", {
+  f <- create_nmbr()
+  expect_equal(f(c(0.123456, -123.456, 123456)), c("0", "&minus;123", "123&#x202F;456"))
+  f <- create_nmbr(accuracy = c(0.01, 0.1, 100))
+  expect_equal(f(c(0.123456, -123.456, 123456)), c("0.12", "&minus;123.5", "123&#x202F;500"))
+  f <- create_nmbr(scale = c(100, 1, 1/1000), suffix = c("%", "", "k"), prefix = c("", "$", ""))
+  expect_equal(f(c(0.123456, -123.456, 123456)), c("12%", "&minus;$123", "123k"))
+  f <- create_nmbr(accuracy = 0.01, big.mark = c("", " ", ","), decimal.mark = c("/", ",", "."))
+  expect_equal(f(c(0.123456, -1234.56, 123456)), c("0/12", "&minus;1 234,56", "123,456.00"))
 })
