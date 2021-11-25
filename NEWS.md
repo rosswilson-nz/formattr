@@ -2,6 +2,8 @@
 
 * Added `pval()`, `sstars()`, and `coef_se()`.
 
+* Added `bold` and `italic` arguments to `nmbr()` and related functions.
+
 # formattr 0.1.0
 
 * First version of `formattr`

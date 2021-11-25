@@ -17,6 +17,8 @@ nmbr(
   suffix = "",
   big.mark = "< >",
   decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
   html = TRUE,
   na = NA_character_,
   ...
@@ -29,6 +31,8 @@ prct(
   prefix = "",
   big.mark = "< >",
   decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
   html = TRUE,
   na = NA_character_,
   ...
@@ -42,6 +46,8 @@ cmma(
   prefix = "",
   suffix = "",
   decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
   html = TRUE,
   na = NA_character_,
   ...
@@ -55,6 +61,8 @@ dllr(
   suffix = "",
   big.mark = "< >",
   decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
   html = TRUE,
   na = NA_character_,
   ...
@@ -76,6 +84,9 @@ pval(
 \item{accuracy, scale, prefix, suffix, big.mark, decimal.mark, ...}{As in
 \code{\link[scales]{number}}. If a vector is supplied, will be applied
 element-wise to \code{x} (and must have the same length as \code{x}).}
+
+\item{bold, italic}{Logical scalar or vector (of the same length as x); which
+(if any) elements of x should be printed in bold or italic face.}
 
 \item{html}{Logical scalar. Whether to include formatting marks (minus
 signs and narrow spaces between digits) as HTML strings (the default;
