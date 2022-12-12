@@ -22,7 +22,7 @@ The goal of formattr is to provide simple tools for formatting and printing (mos
 
 ## Installation
 
-This is a pre-release version and is not yet functional. You can install the current development version of `formattr` from [GitHub](https://github.com) with:
+You can install the current development version of `formattr` from [GitHub](https://github.com) with:
 
 ``` r
 #install.packages("devtools")

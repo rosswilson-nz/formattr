@@ -11,8 +11,7 @@ printing (mostly numeric) values nicely in generated RMarkdown reports.
 
 ## Installation
 
-This is a pre-release version and is not yet functional. You can install
-the current development version of `formattr` from
+You can install the current development version of `formattr` from
 [GitHub](https://github.com) with:
 
 ``` r

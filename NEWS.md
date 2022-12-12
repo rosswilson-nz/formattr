@@ -1,6 +1,8 @@
-# formattr 0.2.0.9000
+# formattr 0.3.0
 
 * Added `bold` and `italic` arguments to `nmbr()` and related functions.
+
+* Added `sf()` and `dp()` formatting utility functions.
 
 # formattr 0.2.0
 
