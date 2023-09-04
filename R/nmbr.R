@@ -15,8 +15,8 @@
 #' @param bold,italic Logical scalar or vector (of the same length as x); which
 #'     (if any) elements of x should be printed in bold or italic face.
 #' @param html Logical scalar. Whether to include formatting marks (minus
-#'     signs and narrow spaces between digits) as HTML strings (the default;
-#'     best for Word or HTML output documents) or unicode.
+#'     signs and narrow spaces between digits) as HTML strings (`TRUE`) or
+#'     unicode (`FALSE`).
 #' @param na String scalar, replacement to use for missing values in `x`.
 #' @param percent,comma,dollar String scalar to use for the specific formatting
 #'     method (percent sign, comma separator, dollar sign, etc).
@@ -35,7 +35,7 @@ NULL
 #' @rdname number-formatting
 #' @export
 nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark = "< >",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = TRUE, na = NA_character_,
+                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
                  ...) {
   if (length(x) == 0) return(character())
   args <- list(x = x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
@@ -135,7 +135,7 @@ check_nmbr_args <- function(args) {
 #' @rdname number-formatting
 #' @export
 prct <- function(x, percent = "%", accuracy = 1, prefix = "", big.mark = "< >", decimal.mark = ".",
-                 bold = FALSE, italic = FALSE, html = TRUE, na = NA_character_, ...) {
+                 bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_, ...) {
   nmbr(x, accuracy = accuracy, scale = 100, prefix = prefix, suffix = percent, big.mark = big.mark,
        decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
 }
@@ -143,7 +143,7 @@ prct <- function(x, percent = "%", accuracy = 1, prefix = "", big.mark = "< >", 
 #' @rdname number-formatting
 #' @export
 cmma <- function(x, comma = ",", accuracy = 1, scale = 1, prefix = "", suffix = "",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = TRUE, na = NA_character_,
+                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
                  ...) {
   nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix, big.mark = comma,
        decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
@@ -152,7 +152,7 @@ cmma <- function(x, comma = ",", accuracy = 1, scale = 1, prefix = "", suffix = 
 #' @rdname number-formatting
 #' @export
 dllr <- function(x, dollar = "$", accuracy = 1, scale = 1, suffix = "", big.mark = "< >",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = TRUE, na = NA_character_,
+                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
                  ...) {
   nmbr(x, accuracy = accuracy, scale = scale, prefix = dollar, suffix = suffix, big.mark = big.mark,
        decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
@@ -161,14 +161,15 @@ dllr <- function(x, dollar = "$", accuracy = 1, scale = 1, suffix = "", big.mark
 #' @rdname number-formatting
 #' @export
 pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
-                 decimal.mark = ".", na = NA_character_, ...) {
+                 decimal.mark = ".", html = FALSE, na = NA_character_, ...) {
   if (!rlang::is_bare_numeric(accuracy, 1)) stop_wrong_type("accuracy", "a numeric scalar")
   if (!rlang::is_bare_numeric(min_p, 1)) stop_wrong_type("min_p", "a numeric scalar")
   if (min_p < accuracy) stop_invalid_min_p(accuracy, min_p)
   if (!rlang::is_bool(add_p)) stop_wrong_type("add_p", "a logical scalar")
 
-  out <- nmbr(x, accuracy = accuracy, decimal.mark = decimal.mark)
-  out[x < min_p] <- paste0("<", nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark))
+  out <- nmbr(x, accuracy = accuracy, decimal.mark = decimal.mark, html = html, ...)
+  out[x < min_p] <- paste0("<", nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark,
+                                     html = html, ...))
 
   if (add_p) {
     out[x < min_p] <- paste0("p", out[x < min_p])
@@ -181,7 +182,7 @@ pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
 #' @rdname number-formatting
 #' @export
 create_nmbr <- function(accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark = "< >",
-                        decimal.mark = ".", html = TRUE, na = NA_character_, ...) {
+                        decimal.mark = ".", html = FALSE, na = NA_character_, ...) {
   args <- list(accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
                big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na)
   check_nmbr_args(args)

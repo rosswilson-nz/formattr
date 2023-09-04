@@ -1,3 +1,7 @@
+# formattr 0.3.1
+
+* Make `html = FALSE` the default in `nmbr()` and friends.
+
 # formattr 0.3.0
 
 * Added `bold` and `italic` arguments to `nmbr()` and related functions.

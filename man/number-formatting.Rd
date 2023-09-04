@@ -20,7 +20,7 @@ nmbr(
   decimal.mark = ".",
   bold = FALSE,
   italic = FALSE,
-  html = TRUE,
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -34,7 +34,7 @@ prct(
   decimal.mark = ".",
   bold = FALSE,
   italic = FALSE,
-  html = TRUE,
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -49,7 +49,7 @@ cmma(
   decimal.mark = ".",
   bold = FALSE,
   italic = FALSE,
-  html = TRUE,
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -64,7 +64,7 @@ dllr(
   decimal.mark = ".",
   bold = FALSE,
   italic = FALSE,
-  html = TRUE,
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -75,6 +75,7 @@ pval(
   min_p = accuracy,
   add_p = FALSE,
   decimal.mark = ".",
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -86,7 +87,7 @@ create_nmbr(
   suffix = "",
   big.mark = "< >",
   decimal.mark = ".",
-  html = TRUE,
+  html = FALSE,
   na = NA_character_,
   ...
 )
@@ -102,8 +103,8 @@ element-wise to \code{x} (and must have the same length as \code{x}).}
 (if any) elements of x should be printed in bold or italic face.}
 
 \item{html}{Logical scalar. Whether to include formatting marks (minus
-signs and narrow spaces between digits) as HTML strings (the default;
-best for Word or HTML output documents) or unicode.}
+signs and narrow spaces between digits) as HTML strings (\code{TRUE}) or
+unicode (\code{FALSE}).}
 
 \item{na}{String scalar, replacement to use for missing values in \code{x}.}
 
