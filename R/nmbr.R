@@ -34,16 +34,39 @@ NULL
 
 #' @rdname number-formatting
 #' @export
-nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark = "< >",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
-                 ...) {
-  if (length(x) == 0) return(character())
-  args <- list(x = x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
-               big.mark = big.mark, decimal.mark = decimal.mark, bold = bold, italic = italic,
-               html = html, na = na)
+nmbr <- function(
+  x,
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  if (length(x) == 0) {
+    return(character())
+  }
+  args <- list(
+    x = x,
+    accuracy = accuracy,
+    scale = scale,
+    prefix = prefix,
+    suffix = suffix,
+    big.mark = big.mark,
+    decimal.mark = decimal.mark,
+    bold = bold,
+    italic = italic,
+    html = html,
+    na = na
+  )
   check_nmbr_args(args)
 
-  x <- round(x*scale/accuracy) * accuracy/scale
+  x <- round(x * scale / accuracy) * accuracy / abs(scale)
 
   minus <- if (html) "&minus;" else "\u2212"
   neg <- rep("", length(x))
@@ -61,23 +84,41 @@ nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark 
 
     frmt <- vapply(
       seq_along(x),
-      function(i) format(abs(scale[i] * x[i]), big.mark = big.mark[i],
-                         decimal.mark = decimal.mark[i], trim = TRUE, nsmall = nsmall[i],
-                         scientific = FALSE, ...),
+      function(i) {
+        format(
+          abs(scale[i] * x[i]),
+          big.mark = big.mark[i],
+          decimal.mark = decimal.mark[i],
+          trim = TRUE,
+          nsmall = nsmall[i],
+          scientific = FALSE,
+          ...
+        )
+      },
       character(1)
     )
   } else {
     nsmall <- min(max(-floor(log10(accuracy)), 0), 20)
 
-    frmt <- format(abs(scale * x), big.mark = big.mark, decimal.mark = decimal.mark, trim = TRUE,
-                   nsmall = nsmall, scientific = FALSE, ...)
+    frmt <- format(
+      abs(scale * x),
+      big.mark = big.mark,
+      decimal.mark = decimal.mark,
+      trim = TRUE,
+      nsmall = nsmall,
+      scientific = FALSE,
+      ...
+    )
   }
 
   emph <- rlang::rep_along(x, "")
   emph[bold] <- "**"
   emph[italic] <- paste0(emph[italic], "*")
-  ret <- stringi::stri_replace_all_regex(paste0(emph, neg, prefix, frmt, suffix, emph),
-                                         "< >", narrow_space)
+  ret <- stringi::stri_replace_all_regex(
+    paste0(emph, neg, prefix, frmt, suffix, emph),
+    "< >",
+    narrow_space
+  )
   ret[is.na(x)] <- na
   names(ret) <- names(x)
   ret
@@ -85,91 +126,235 @@ nmbr <- function(x, accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark 
 
 check_nmbr_args <- function(args) {
   if (!is.null(args$x)) {
-    if (!rlang::is_bare_numeric(eval(args$x))) stop_wrong_type("x", "a numeric vector")
+    if (!rlang::is_bare_numeric(eval(args$x))) {
+      stop_wrong_type("x", "a numeric vector")
+    }
   }
 
-  if (!is.null(args$accuracy) && !rlang::is_bare_numeric(args$accuracy))
+  if (!is.null(args$accuracy) && !rlang::is_bare_numeric(args$accuracy)) {
     stop_wrong_type("accuracy", "a numeric vector/scalar")
-  if (!is.null(args$scale) && !rlang::is_bare_numeric(args$scale))
+  }
+  if (!is.null(args$scale) && !rlang::is_bare_numeric(args$scale)) {
     stop_wrong_type("scale", "a numeric vector/scalar")
-  if (!is.null(args$prefix) && !rlang::is_bare_character(args$prefix))
+  }
+  if (!is.null(args$prefix) && !rlang::is_bare_character(args$prefix)) {
     stop_wrong_type("prefix", "a character vector/scalar")
-  if (!is.null(args$suffix) && !rlang::is_bare_character(args$suffix))
+  }
+  if (!is.null(args$suffix) && !rlang::is_bare_character(args$suffix)) {
     stop_wrong_type("suffix", "a character vector/scalar")
-  if (!is.null(args$big.mark) && !rlang::is_bare_character(args$big.mark))
+  }
+  if (!is.null(args$big.mark) && !rlang::is_bare_character(args$big.mark)) {
     stop_wrong_type("big.mark", "a character vector/scalar")
-  if (!is.null(args$decimal.mark) && !rlang::is_bare_character(args$decimal.mark))
+  }
+  if (
+    !is.null(args$decimal.mark) && !rlang::is_bare_character(args$decimal.mark)
+  ) {
     stop_wrong_type("decimal.mark", "a character vector/scalar")
-  if (!is.null(args$bold) && !rlang::is_bare_logical(args$bold))
+  }
+  if (!is.null(args$bold) && !rlang::is_bare_logical(args$bold)) {
     stop_wrong_type("bold", "a logical vector/scalar")
-  if (!is.null(args$italic) && !rlang::is_bare_logical(args$italic))
+  }
+  if (!is.null(args$italic) && !rlang::is_bare_logical(args$italic)) {
     stop_wrong_type("italic", "a logical vector/scalar")
+  }
 
-  if (!is.null(args$html) && !rlang::is_bool(args$html))
+  if (!is.null(args$html) && !rlang::is_bool(args$html)) {
     stop_wrong_type("html", "`TRUE`/`FALSE`")
-  if (!is.null(args$na) && !rlang::is_scalar_character(args$na))
+  }
+  if (!is.null(args$na) && !rlang::is_scalar_character(args$na)) {
     stop_wrong_type("na", "a string scalar")
+  }
 
   if (!is.null(args$x)) {
     lenx <- length(args$x)
-    if (!is.null(args$accuracy) && length(args$accuracy) != 1 && length(args$accuracy) != lenx)
+    if (
+      !is.null(args$accuracy) &&
+        length(args$accuracy) != 1 &&
+        length(args$accuracy) != lenx
+    ) {
       stop_wrong_length("accuracy", lenx, length(args$accuracy))
-    if (!is.null(args$scale) && length(args$scale) != 1 && length(args$scale) != lenx)
+    }
+    if (
+      !is.null(args$scale) &&
+        length(args$scale) != 1 &&
+        length(args$scale) != lenx
+    ) {
       stop_wrong_length("scale", lenx, length(args$scale))
-    if (!is.null(args$prefix) && length(args$prefix) != 1 && length(args$prefix) != lenx)
+    }
+    if (
+      !is.null(args$prefix) &&
+        length(args$prefix) != 1 &&
+        length(args$prefix) != lenx
+    ) {
       stop_wrong_length("prefix", lenx, length(args$prefix))
-    if (!is.null(args$suffix) && length(args$suffix) != 1 && length(args$suffix) != lenx)
+    }
+    if (
+      !is.null(args$suffix) &&
+        length(args$suffix) != 1 &&
+        length(args$suffix) != lenx
+    ) {
       stop_wrong_length("suffix", lenx, length(args$suffix))
-    if (!is.null(args$big.mark) && length(args$big.mark) != 1 && length(args$big.mark) != lenx)
+    }
+    if (
+      !is.null(args$big.mark) &&
+        length(args$big.mark) != 1 &&
+        length(args$big.mark) != lenx
+    ) {
       stop_wrong_length("big.mark", lenx, length(args$big.mark))
-    if (!is.null(args$decimal.mark) && length(args$decimal.mark) != 1
-        && length(args$decimal.mark) != lenx)
+    }
+    if (
+      !is.null(args$decimal.mark) &&
+        length(args$decimal.mark) != 1 &&
+        length(args$decimal.mark) != lenx
+    ) {
       stop_wrong_length("decimal.mark", lenx, length(args$decimal.mark))
-    if (!is.null(args$bold) && length(args$bold) != 1 && length(args$bold) != lenx)
+    }
+    if (
+      !is.null(args$bold) && length(args$bold) != 1 && length(args$bold) != lenx
+    ) {
       stop_wrong_length("bold", lenx, length(args$bold))
-    if (!is.null(args$italic) && length(args$italic) != 1 && length(args$italic) != lenx)
+    }
+    if (
+      !is.null(args$italic) &&
+        length(args$italic) != 1 &&
+        length(args$italic) != lenx
+    ) {
       stop_wrong_length("italic", lenx, length(args$italic))
+    }
   }
 }
 
 #' @rdname number-formatting
 #' @export
-prct <- function(x, percent = "%", accuracy = 1, prefix = "", big.mark = "< >", decimal.mark = ".",
-                 bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_, ...) {
-  nmbr(x, accuracy = accuracy, scale = 100, prefix = prefix, suffix = percent, big.mark = big.mark,
-       decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
+prct <- function(
+  x,
+  percent = "%",
+  accuracy = 1,
+  prefix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  nmbr(
+    x,
+    accuracy = accuracy,
+    scale = 100,
+    prefix = prefix,
+    suffix = percent,
+    big.mark = big.mark,
+    decimal.mark = decimal.mark,
+    bold = bold,
+    italic = italic,
+    html = html,
+    na = na,
+    ...
+  )
 }
 
 #' @rdname number-formatting
 #' @export
-cmma <- function(x, comma = ",", accuracy = 1, scale = 1, prefix = "", suffix = "",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
-                 ...) {
-  nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix, big.mark = comma,
-       decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
+cmma <- function(
+  x,
+  comma = ",",
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  nmbr(
+    x,
+    accuracy = accuracy,
+    scale = scale,
+    prefix = prefix,
+    suffix = suffix,
+    big.mark = comma,
+    decimal.mark = decimal.mark,
+    bold = bold,
+    italic = italic,
+    html = html,
+    na = na,
+    ...
+  )
 }
 
 #' @rdname number-formatting
 #' @export
-dllr <- function(x, dollar = "$", accuracy = 1, scale = 1, suffix = "", big.mark = "< >",
-                 decimal.mark = ".", bold = FALSE, italic = FALSE, html = FALSE, na = NA_character_,
-                 ...) {
-  nmbr(x, accuracy = accuracy, scale = scale, prefix = dollar, suffix = suffix, big.mark = big.mark,
-       decimal.mark = decimal.mark, bold = bold, italic = italic, html = html, na = na, ...)
+dllr <- function(
+  x,
+  dollar = "$",
+  accuracy = 1,
+  scale = 1,
+  suffix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  bold = FALSE,
+  italic = FALSE,
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  nmbr(
+    x,
+    accuracy = accuracy,
+    scale = scale,
+    prefix = dollar,
+    suffix = suffix,
+    big.mark = big.mark,
+    decimal.mark = decimal.mark,
+    bold = bold,
+    italic = italic,
+    html = html,
+    na = na,
+    ...
+  )
 }
 
 #' @rdname number-formatting
 #' @export
-pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
-                 decimal.mark = ".", html = FALSE, na = NA_character_, ...) {
-  if (!rlang::is_bare_numeric(accuracy, 1)) stop_wrong_type("accuracy", "a numeric scalar")
-  if (!rlang::is_bare_numeric(min_p, 1)) stop_wrong_type("min_p", "a numeric scalar")
-  if (min_p < accuracy) stop_invalid_min_p(accuracy, min_p)
-  if (!rlang::is_bool(add_p)) stop_wrong_type("add_p", "a logical scalar")
+pval <- function(
+  x,
+  accuracy = 0.0001,
+  min_p = accuracy,
+  add_p = FALSE,
+  decimal.mark = ".",
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  if (!rlang::is_bare_numeric(accuracy, 1)) {
+    stop_wrong_type("accuracy", "a numeric scalar")
+  }
+  if (!rlang::is_bare_numeric(min_p, 1)) {
+    stop_wrong_type("min_p", "a numeric scalar")
+  }
+  if (min_p < accuracy) {
+    stop_invalid_min_p(accuracy, min_p)
+  }
+  if (!rlang::is_bool(add_p)) {
+    stop_wrong_type("add_p", "a logical scalar")
+  }
 
-  out <- nmbr(x, accuracy = accuracy, decimal.mark = decimal.mark, html = html, ...)
-  out[x < min_p] <- paste0("<", nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark,
-                                     html = html, ...))
+  out <- nmbr(
+    x,
+    accuracy = accuracy,
+    decimal.mark = decimal.mark,
+    html = html,
+    ...
+  )
+  out[x < min_p] <- paste0(
+    "<",
+    nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark, html = html, ...)
+  )
 
   if (add_p) {
     out[x < min_p] <- paste0("p", out[x < min_p])
@@ -181,12 +366,41 @@ pval <- function(x, accuracy = 0.0001, min_p = accuracy, add_p = FALSE,
 
 #' @rdname number-formatting
 #' @export
-create_nmbr <- function(accuracy = 1, scale = 1, prefix = "", suffix = "", big.mark = "< >",
-                        decimal.mark = ".", html = FALSE, na = NA_character_, ...) {
-  args <- list(accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
-               big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na)
+create_nmbr <- function(
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  big.mark = "< >",
+  decimal.mark = ".",
+  html = FALSE,
+  na = NA_character_,
+  ...
+) {
+  args <- list(
+    accuracy = accuracy,
+    scale = scale,
+    prefix = prefix,
+    suffix = suffix,
+    big.mark = big.mark,
+    decimal.mark = decimal.mark,
+    html = html,
+    na = na
+  )
   check_nmbr_args(args)
 
-  function(x) nmbr(x, accuracy = accuracy, scale = scale, prefix = prefix, suffix = suffix,
-                   big.mark = big.mark, decimal.mark = decimal.mark, html = html, na = na, ...)
+  function(x) {
+    nmbr(
+      x,
+      accuracy = accuracy,
+      scale = scale,
+      prefix = prefix,
+      suffix = suffix,
+      big.mark = big.mark,
+      decimal.mark = decimal.mark,
+      html = html,
+      na = na,
+      ...
+    )
+  }
 }

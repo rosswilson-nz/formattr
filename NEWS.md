@@ -1,3 +1,7 @@
+# formattr 0.3.2
+
+* Allow negative `scale` values to change the sign of the result.
+
 # formattr 0.3.1
 
 * Make `html = FALSE` the default in `nmbr()` and friends.
