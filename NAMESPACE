@@ -2,7 +2,6 @@
 
 export(cmma)
 export(coef_se)
-export(create_descriptive_table)
 export(create_nmbr)
 export(dllr)
 export(dp)
