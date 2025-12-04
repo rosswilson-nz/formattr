@@ -66,13 +66,13 @@ nmbr <- function(
   )
   check_nmbr_args(args)
 
-  x <- round(x * scale / accuracy) * accuracy / abs(scale)
-
   minus <- if (html) "&minus;" else "\u2212"
   neg <- rep("", length(x))
-  neg[x < 0] <- minus
+  neg[(x * scale) < 0] <- minus
 
   narrow_space <- if (html) "&#x202F;" else "\u202F"
+
+  x <- round(x * scale / accuracy) * accuracy / abs(scale)
 
   if (any(lengths(args[-1]) > 1)) {
     accuracy <- rlang::rep_along(x, accuracy)
@@ -351,14 +351,14 @@ pval <- function(
     html = html,
     ...
   )
-  out[x < min_p] <- paste0(
+  out[!is.na(x) & x < min_p] <- paste0(
     "<",
     nmbr(min_p, accuracy = min_p, decimal.mark = decimal.mark, html = html, ...)
   )
 
   if (add_p) {
-    out[x < min_p] <- paste0("p", out[x < min_p])
-    out[x >= min_p] <- paste0("p=", out[x >= min_p])
+    out[!is.na(x) & x < min_p] <- paste0("p", out[!is.na(x) & x < min_p])
+    out[!is.na(x) & x >= min_p] <- paste0("p=", out[!is.na(x) & x >= min_p])
   }
 
   out

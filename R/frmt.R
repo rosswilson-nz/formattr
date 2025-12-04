@@ -32,83 +32,177 @@ NULL
 #' @rdname output-formatting
 #'
 #' @export
-mean_sd <- function(mean, sd, prefix = "", suffix = "", ...,
-                    format_paren = TRUE) {
-  if (!rlang::is_bool(format_paren)) stop_wrong_type("format_paren", "a logical scalar")
-  else if (format_paren) {
+mean_sd <- function(
+  mean,
+  sd,
+  prefix = "",
+  suffix = "",
+  ...,
+  format_paren = TRUE
+) {
+  if (!rlang::is_bool(format_paren)) {
+    stop_wrong_type("format_paren", "a logical scalar")
+  } else if (format_paren) {
     prefix_paren = prefix
     suffix_paren = suffix
   } else {
     prefix_paren = ""
     suffix_paren = ""
   }
-  paste0(nmbr(mean, prefix = prefix, suffix = suffix, ...),
-         ' (', nmbr(sd, prefix = prefix_paren, suffix = suffix_paren, ...), ')')
+  paste0(
+    nmbr(mean, prefix = prefix, suffix = suffix, ...),
+    ' (',
+    nmbr(sd, prefix = prefix_paren, suffix = suffix_paren, ...),
+    ')'
+  )
 }
 
 #' @rdname output-formatting
 #'
 #' @export
-n_percent <- function(n, proportion, accuracy = 1, scale = 1, prefix = "", suffix = "",
-                      percent = "%", ..., format_paren = TRUE) {
-  if (!rlang::is_bool(format_paren)) stop_wrong_type("format_paren", "a logical scalar")
-  else if (format_paren) {
+n_percent <- function(
+  n,
+  proportion,
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  percent = "%",
+  ...,
+  format_paren = TRUE
+) {
+  if (!rlang::is_bool(format_paren)) {
+    stop_wrong_type("format_paren", "a logical scalar")
+  } else if (format_paren) {
     prefix_paren = prefix
     suffix_paren = percent
   } else {
     prefix_paren = ""
     suffix_paren = ""
   }
-  if (missing(proportion)) proportion <- n / sum(n)
-  paste0(nmbr(n, accuracy = 1, scale = scale, prefix = prefix, suffix = suffix, ...), ' (',
-         prct(proportion, accuracy = accuracy, prefix = prefix_paren, percent = suffix_paren, ...),
-         ')')
+  if (missing(proportion)) {
+    proportion <- n / sum(n)
+  }
+  paste0(
+    nmbr(n, accuracy = 1, scale = scale, prefix = prefix, suffix = suffix, ...),
+    ' (',
+    prct(
+      proportion,
+      accuracy = accuracy,
+      prefix = prefix_paren,
+      percent = suffix_paren,
+      ...
+    ),
+    ')'
+  )
 }
 
 #' @rdname output-formatting
 #'
 #' @export
-est_ci <- function(est, low, high, p, prefix = "", suffix = "", ...,
-                   .sep = ' to ', format_paren = TRUE,
-                   stars = TRUE, levels = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-                   accuracy_p = 0.0001, min_p = accuracy_p, add_p = TRUE) {
-  if (!rlang::is_string(.sep)) stop_wrong_type(".sep", "a string scalar")
-  if (!rlang::is_bool(stars)) stop_wrong_type("stars", "a logical scalar")
-  if (!rlang::is_bool(format_paren)) stop_wrong_type("format_paren", "a logical scalar")
-  else if (format_paren) {
+est_ci <- function(
+  est,
+  low,
+  high,
+  p,
+  prefix = "",
+  suffix = "",
+  ...,
+  .sep = ' to ',
+  format_paren = TRUE,
+  stars = TRUE,
+  levels = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  accuracy_p = 0.0001,
+  min_p = accuracy_p,
+  add_p = TRUE
+) {
+  if (!rlang::is_string(.sep)) {
+    stop_wrong_type(".sep", "a string scalar")
+  }
+  if (!rlang::is_bool(stars)) {
+    stop_wrong_type("stars", "a logical scalar")
+  }
+  if (!rlang::is_bool(format_paren)) {
+    stop_wrong_type("format_paren", "a logical scalar")
+  } else if (format_paren) {
     prefix_paren = prefix
     suffix_paren = suffix
   } else {
     prefix_paren = ""
     suffix_paren = ""
   }
-  if (!missing(p)) {
-    if (stars) sig <- sstars(p, levels = levels)
-    else sig <- paste0("(", pval(p, accuracy = accuracy_p, min_p = min_p, add_p = add_p), ")")
+  sig <- if (!missing(p)) {
+    if (stars) {
+      ifelse(is.na(p), "", paste0(" ", sstars(p, levels = levels)))
+    } else {
+      ifelse(
+        is.na(p),
+        "",
+        paste0(
+          " (",
+          pval(p, accuracy = accuracy_p, min_p = min_p, add_p = add_p),
+          ")"
+        )
+      )
+    }
   }
 
-  paste0(nmbr(est, prefix = prefix, suffix = suffix, ...), ' (',
-         nmbr(low, prefix = prefix_paren, suffix = suffix_paren, ...), .sep,
-         nmbr(high, prefix = prefix_paren, suffix = suffix_paren, ...), ')',
-         if (!missing(p)) paste0(" ", sig))
+  ci <- ifelse(
+    is.na(low) | is.na(high),
+    "",
+    paste0(
+      ' (',
+      nmbr(low, prefix = prefix_paren, suffix = suffix_paren, ...),
+      .sep,
+      nmbr(high, prefix = prefix_paren, suffix = suffix_paren, ...),
+      ')'
+    )
+  )
+
+  paste0(nmbr(est, prefix = prefix, suffix = suffix, ...), ci, sig)
 }
 
 #' @rdname output-formatting
 #'
 #' @export
-coef_se <- function(coef, se, p, prefix = "", suffix = "", ...,
-                    stars = TRUE, levels = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-                    accuracy_p = 0.0001, min_p = accuracy_p, add_p = TRUE) {
-  if (!rlang::is_bool(stars)) stop_wrong_type("stars", "a logical scalar")
-
-  if (!missing(p)) {
-    se <- if (missing(se)) "" else paste0(' (', nmbr(se, ...), ')')
-    if (stars) sig <- sstars(p, levels = levels)
-    else sig <- paste0("(", pval(p, accuracy = accuracy_p, min_p = min_p, add_p = add_p), ")")
-  } else {
-    se <- paste0(' (', nmbr(se, ...), ')')
+coef_se <- function(
+  coef,
+  se,
+  p,
+  prefix = "",
+  suffix = "",
+  ...,
+  stars = TRUE,
+  levels = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  accuracy_p = 0.0001,
+  min_p = accuracy_p,
+  add_p = TRUE
+) {
+  if (!rlang::is_bool(stars)) {
+    stop_wrong_type("stars", "a logical scalar")
   }
 
-  paste0(nmbr(coef, prefix = prefix, suffix = suffix, ...), se,
-         if (!missing(p)) paste0(" ", sig))
+  se <- if (missing(se)) {
+    ""
+  } else {
+    ifelse(is.na(se), "", paste0(' (', nmbr(se, ...), ')'))
+  }
+
+  sig <- if (!missing(p)) {
+    if (stars) {
+      ifelse(is.na(p), "", paste0(" ", sstars(p, levels = levels)))
+    } else {
+      ifelse(
+        is.na(p),
+        "",
+        paste0(
+          " (",
+          pval(p, accuracy = accuracy_p, min_p = min_p, add_p = add_p),
+          ")"
+        )
+      )
+    }
+  }
+
+  paste0(nmbr(coef, prefix = prefix, suffix = suffix, ...), se, sig)
 }
